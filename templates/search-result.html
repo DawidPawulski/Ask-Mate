@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Search result
+{% endblock %}
+
+{% block content%}
+    <h1>Questions we found with phrase "{{ search_phrase }}":</h1><br>
+    <div>
+        {% for question in questions %}
+
+            <div id="detail-table">
+                <div class="wrapper">
+                    <aside class="image-column"><img src="/static/images/{{ question.image }}" id="image"></aside>
+                    <article class="text-column">
+                         <h1>
+                             <a href="{{ url_for('display_answers', question_id=question.id) }}"
+                                class="question-title">
+                                {% if search_phrase|upper in question.title|upper %}
+                                    {% set list1 = question.title.split() %}
+                                    {% include 'search-highlight.html' %}
+                                {% else %}
+                                    {{ question.title }}
+                                {% endif %}
+                             </a><br>
+                         </h1>
+
+                        <p id="detailed-message">
+                            {% if search_phrase|upper in question.message|upper %}
+                                {% set list1 = question.message.split() %}
+                                {% include 'search-highlight.html' %}
+                            {% else %}
+                                {{ question.message }}
+                            {% endif %}
+
+                        </p>
+                    </article>
+
+                </div>
+            </div>
+
+        {% endfor %}
+    </div>
+    <br><br>
+    <h1>Answers we found with phrase "{{ search_phrase }}":</h1><br>
+
+    <div id="detail-table">
+        {% for answer in answers %}
+            <div class="wrapper">
+                <aside class="image-column"><img src="/static/images/{{ answer.image }}" id="image"></aside>
+                <article class="answer-text-column">
+                    {% if search_phrase|upper in answer.message|upper %}
+                        {% set list1 = answer.message.split() %}
+                        {% include 'search-highlight.html' %}
+                    {% else %}
+                        {{ answer.message }}
+                    {% endif %}
+
+                </article>
+            <footer class="footer"><a href="{{ url_for('display_answers', question_id=answer.question_id) }}"
+                       class="question-title">GO TO QUESTION</a></footer>
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

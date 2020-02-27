@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block title %}Comment{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Comment</h1>
+        <form action="/answer/{{ answer_id }}/new-comment" method="post">
+            <label for="message">Message:</label><br>
+            <textarea id="message" name="message" rows="8" cols="30" required minlength="10">{{ comment.message if comment }}</textarea><br>
+            <button type="submit">Add new answer</button>
+        </form>
+    </div>
+
+{% endblock %}

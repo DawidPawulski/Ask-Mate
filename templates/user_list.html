@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% block title %}Users list{% endblock %}
+
+{% block content %}
+
+    <table class="table">
+        <thead class="thead-dark">
+            <th scope="col">Login</th>
+            <th scope="col">Reputation</th>
+        </thead>
+        <tbody>
+            {% for user in all_users %}
+                <tr scope="row">
+                    <td scope="row">
+                        <a href="{{ url_for('display_user_details', user_id=user.user_id) }}">
+                            {{ user.login }}
+                        </a>
+                    </td>
+                    <td scope="row">{{ user.reputation }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

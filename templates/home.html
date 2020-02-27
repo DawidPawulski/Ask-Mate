@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}Welcome to AskMate{% endblock %}
+
+{% block content %}
+    <h1>All Questions</h1>
+	{% if session['username'] %}
+		<a href="/add-question"><button>Ask question</button></a>
+	{% endif %}
+
+
+    <form class="search-form" method="get" action="/search">
+        <label for="search-phrase">Search on the website:</label><br>
+        <input type="text" minlength="3" name="q" id="search-phrase">
+        <input type="submit" value="Search">
+    </form>
+
+
+
+    <div class="sorting">
+        <form action="/list" method="get" class="sort_button">
+            <input type="hidden" name="order_by" value="submission_time">
+            <button type="submit">Date</button>
+        </form>
+
+        <form action="/list" method="get" class="sort_button">
+            <input type="hidden" name="order_by" value="view_number">
+            <button type="submit">Views</button>
+        </form>
+
+        <form action="/list" method="get" class="sort_button">
+            <input type="hidden" name="order_by" value="vote_number">
+            <button type="submit">Votes</button>
+        </form>
+
+        <form action="/list" method="get" class="sort_button">
+            <input type="hidden" name="order_by" value="title">
+            <button type="submit">Title</button>
+        </form>
+
+        <form action="/list" method="POST" class="sort_button">
+            <input type="hidden" name="limits" value="limit_off">
+            {% if limit != 'limit_off' %}
+            <button type="submit">Show All</button>
+            {% endif %}
+        </form>
+    </div>
+
+    <div id="detail-table">
+        {% for question in questions %}
+            <div class="wrapper">
+                <aside class="image-column"><img src="/static/images/{{ question.image }}" id="image">
+                    {% for info in user_info %}
+                        {% if info['user_id'] == question['user_id'] %}
+                            <p> {{ info.login }} </p>
+                            <p> Rep:{{ info.reputation }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </aside>
+                <article class="text-column">
+                    <h1><a href="{{ url_for('display_answers', question_id=question.id) }}" class="question-title">{{ question.title }}</a><br></h1>
+                    <p>{{ question.message }}</p>
+                </article>
+
+                {%  set which_page_to_redirect = "home"  %}
+
+                <section class="votes-column">
+                    <header>Votes</header>
+                    <div class="statistics-display">{{ question.vote_number }}</div>
+                    <form action="/question/{{ question.id }}/vote/{{ which_page_to_redirect }}" method="get">
+                        <input type="hidden" name="vote" value="-1">
+                        <button type="submit"><i class="fa fa-thumbs-down"></i></button>
+                    </form>
+                    <form action="/question/{{ question.id }}/vote/{{ which_page_to_redirect }}" method="get">
+                        <input type="hidden" name="vote" value="1">
+                        <button type="submit"><i class="fa fa-thumbs-up"></i></button>
+                    </form>
+                </section>
+
+                <section class="views-column">
+                    <header>Views</header>
+                    <div class="statistics-display">{{ question.view_number }}</div>
+                </section>
+
+                <section class="delete-column"><a href="{{ url_for('delete_question', question_id=question.id) }}"><button><i class="fa fa-trash"></i></button></a></section>
+                <footer class="footer">Added: {{ question.submission_time }}</footer>
+            </div>
+
+        {% endfor %}
+    </div>
+
+{% endblock %}

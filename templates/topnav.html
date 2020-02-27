@@ -1,0 +1,19 @@
+<a href="/"><img src="/static/images/logo.png" height="80" width="80"></a>
+<div id="login-register-box">
+	{% if session['username'] %}
+		<a href="{{ url_for('logout_user') }}">
+			<button>Log out</button>
+		</a>
+	{% else %}
+		<form action="/login" method="post">
+			<input name="login" placeholder="login" required minlength="5">
+	        <input type="password" name="password" placeholder="password" required minlength="5"><br>
+			<input type="submit" value="Log in">
+			<input type="hidden" name="current_path" value="{{ request.path }}">
+
+			<input type="submit" value="Register" method="post" formaction="/register">
+		</form>
+	{% endif %}
+	</form>
+    <a href="{{ url_for('display_all_users') }}"><button>Display all users</button></a>
+</div>

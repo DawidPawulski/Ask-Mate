@@ -1,0 +1,8 @@
+{% for word in list1 %}
+    {% if search_phrase|upper in word|upper%}
+        <mark>{{ word }}</mark>
+
+    {% else %}
+        {{ word }}
+    {% endif %}
+{% endfor %}

@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block title %}Edit answer{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Edit Answer</h1>
+        <form action="/answer/{{ answer_data.id }}/edit" method="post" enctype="multipart/form-data">
+            <label for="image">Add image:</label><br>
+            <input type="file" name="image" id="image" accept="image/*"><br>
+            <label for="message">Message:</label><br>
+            <textarea id="message" name="message" rows="8" cols="30" required minlength="10">{{ answer_data.message if answer_data.message }}</textarea><br>
+            <button type="submit">Add new answer</button>
+        </form>
+    </div>
+
+{% endblock %}

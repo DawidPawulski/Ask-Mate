@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+
+    <div>
+        <form action="#" method="post" enctype="multipart/form-data">
+            <div>
+                <label for="title">Title:</label><br>
+                <input name="title" id="title" minlength="5" size="100" value="{{ question.title if question.title }}" required><br><br>
+                <label for="image">Add image:</label><br>
+                <input type="file" name="image" id="image" accept="image/*"><br>
+                <label for="message">Message:</label><br>
+                <textarea name="message" id="message" rows="10" cols="100" required>{{ question.message if question.message }}</textarea><br><br>
+                {% block submit_button %}{% endblock %}
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

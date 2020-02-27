@@ -1,0 +1,96 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    User information
+{% endblock %}
+
+{% block content %}
+
+    <h1>Information about user {{ user_details.login }} (reputation: {{ user_details.reputation }})</h1><br><br>
+    <h2>Questions from {{ user_details.login }}:</h2><br>
+    {% if user_questions %}
+        <div>
+            {% for question in user_questions %}
+
+                <div id="detail-table">
+                    <div class="wrapper">
+                        <aside class="image-column"><img src="/static/images/{{ question.image }}" id="image"></aside>
+                        <article class="text-column">
+                            <h1>
+                                <a href="{{ url_for('display_answers', question_id=question.id) }}"
+                                   class="question-title">
+                                    {{ question.title }}
+                                </a><br>
+                            </h1>
+
+                            <p id="detailed-message">
+                                {{ question.message }}
+                            </p>
+                        </article>
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-result">
+            Nothing found :(
+        </div>
+    {% endif %}
+    <br><br>
+    <h2>Answers from {{ user_details.login }} </h2><br>
+    {% if user_answers %}
+        <div id="detail-table">
+            {% for answer in user_answers %}
+                <div class="wrapper">
+                    <aside class="image-column"><img src="/static/images/{{ answer.image }}" id="image"></aside>
+                    <article class="answer-text-column">
+                        {{ answer.message }}
+                    </article>
+                    <footer class="footer"><a href="{{ url_for('display_answers', question_id=answer.question_id) }}"
+                                              class="question-title">GO TO QUESTION</a></footer>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-result">
+            Nothing found :(
+        </div>
+    {% endif %}
+    <br><br>
+    <h2>Comments from {{ user_details.login }} </h2><br>
+    {% if user_comments %}
+        <div id="detail-table">
+            {% for comment in user_comments %}
+                <div class="wrapper">
+
+                    <article class="answer-text-column">
+                        {{ comment.message }}
+                    </article>
+                    <footer class="footer">
+                        {% if comment.question_id != None %}
+                            <a href="{{ url_for('display_answers', question_id=comment.question_id) }}"
+                               class="question-title">
+
+                                GO TO QUESTION
+                            </a>
+                        {% else %}
+                            {% set answer_id = comment.answer_id %}
+
+                            <a href="{{ url_for('display_answers', question_id=clever_function(answer_id)) }}"
+                               class="question-title">
+
+                                GO TO QUESTION
+                            </a>
+                        {% endif %}
+
+                    </footer>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-result">
+            Nothing found :(
+        </div>
+    {% endif %}
+{% endblock %}

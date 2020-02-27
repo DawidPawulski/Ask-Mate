@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ question.title }}{% endblock %}
+
+{% block content %}
+
+    <a href="/question/{{ question.id }}/edit"><button>Edit question</button></a>
+	{% if session['username'] %}
+        <a href="/question/{{ question.id }}/new-answer"><button>Add new answer</button></a>
+	{% endif %}
+
+    <div id="detail-table">
+        <div class="wrapper">
+            <aside class="image-column"><img src="/static/images/{{ question.image }}" id="image">
+                {% for info in user_info_question %}
+                    {% if info['user_id'] == question['user_id'] %}
+                        <p> {{ info.login }} </p>
+                        <p> Rep:{{ info.reputation }}</p>
+                    {% endif %}
+                {% endfor %}
+            </aside>
+            <article class="text-column">
+                <h1><a href="{{ url_for('display_answers', question_id=question.id) }}" class="question-title">{{ question.title }}</a><br></h1>
+                <p id="detailed-message">{{ question.message }}</p>
+            </article>
+
+            {%  set which_page_to_redirect = "question"  %}
+
+            <section class="votes-column">
+                <header>Votes</header>
+                <div class="statistics-display">{{ question.vote_number }}</div>
+                <form action="/question/{{ question.id }}/vote/{{ which_page_to_redirect }}" method="get">
+                    <input type="hidden" name="vote" value="-1">
+                    <button type="submit"><i class="fa fa-thumbs-down"></i></button>
+                </form>
+                <form action="/question/{{ question.id }}/vote/{{ which_page_to_redirect }}" method="get">
+                    <input type="hidden" name="vote" value="1">
+                    <button type="submit"><i class="fa fa-thumbs-up"></i></button>
+                </form>
+            </section>
+
+            <section class="views-column">
+                <header>Views</header>
+                <div class="statistics-display">{{ question.view_number }}</div>
+            </section>
+
+            <section class="delete-column"><a href="{{ url_for('delete_question', question_id=question.id) }}"><button><i class="fa fa-trash"></i></button></a></section>
+            <section class="submission-time">Added: {{ question.submission_time }}</section>
+            {% if session['username'] %}
+	            <section class="comment-button"><a href="{{ url_for('new_question_comment', question_id=question.id) }}"><button><i class="fa fa-edit"></i></a></section>
+			{% endif %}
+
+            {% if question_comments %}
+            <table class="comments">
+                {% for comment in question_comments %}
+                    <tr>
+                        <td class="comment-message">{{ comment.message }}</td>
+
+                        <td class="comment-submission">{{ comment.submission_time }}</td>
+                        <td class="delete-column"><a href="{{ url_for('delete_comment', comment_id=comment.id) }}"><button><i class="fa fa-trash"></i></button></a></td>
+                    </tr>
+
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="detail-table">
+        {% for answer in answers %}
+            <div class="wrapper">
+                <aside class="image-column"><img src="/static/images/{{ answer.image }}" id="image">
+                    {% for info in user_info_answer %}
+                        {% if info['user_id'] == answer['user_id'] and info['answer_id'] == answer['id']%}
+                            <p> {{ info.login }} </p>
+                            <p> Rep:{{ info.reputation }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </aside>
+                <article class="answer-text-column">
+                    <p>{{ answer.message }}</p>
+                </article>
+
+                <section class="votes-column">
+                    <header>Votes</header>
+                    <div class="statistics-display">{{ answer.vote_number }}</div>
+                    <form action="/question/vote/{{ answer.id }}/{{ question.id }}" method="get">
+                        <input type="hidden" name="vote" value="-1">
+                        <button type="submit"><i class="fa fa-thumbs-down"></i></button>
+                    </form>
+                    <form action="/question/vote/{{ answer.id }}/{{ question.id }}" method="get">
+                        <input type="hidden" name="vote" value="1">
+                        <button type="submit"><i class="fa fa-thumbs-up"></i></button>
+                    </form>
+                </section>
+
+                <section class="delete-column">
+                    <a href="{{ url_for('delete_answer', answer_id=answer.id) }}"><button><i class="fa fa-trash"></i></button></a>
+                    {% if check_button and answer.check_answer == 'false' %}
+                        <a href="/check_question/{{ answer.id }}/{{ question.id }}"><button>Accept</button></a>
+                    {% endif %}
+                </section>
+
+                <section class="submission-time">Added: {{ answer.submission_time }}
+                    <a class="answer-edit" href="/answer/{{ answer.id }}/edit"><button id="answer-edit-button">Edit answer</button></a>
+                </section>
+                {% if session['username'] %}
+	                <section class="comment-button"><a href="{{ url_for('new_answer_comment', answer_id=answer.id) }}"><button><i class="fa fa-edit"></i></a></section>
+				{% endif %}
+                {% if answer_comments %}
+                <table class="comments">
+                    {% for comment in answer_comments if comment.answer_id == answer.id %}
+                        <tr>
+                            <td class="comment-message">{{ comment.message }}</td>
+                            <td class="comment-submission">{{ comment.submission_time }}</td>
+{#                            <td><a class="comment-edit" href="/comments/{{ comment.id }}/edit"><button id="comment-edit-button">Edit comment</button></a></td>#}
+                            <td class="delete-column"><a href="{{ url_for('delete_comment', comment_id=comment.id) }}"><button><i class="fa fa-trash"></i></button></a>
+
+                        </tr>
+
+                    {% endfor %}
+                </table>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
