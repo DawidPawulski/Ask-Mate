@@ -23,4 +23,6 @@ Python
 
 Flask
 
+JavaScript
+
 PostgreSQL
