@@ -25,4 +25,6 @@ Flask
 
 JavaScript
 
+REST API
+
 PostgreSQL
